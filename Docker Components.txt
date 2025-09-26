@@ -1,0 +1,643 @@
+Docker Components:
+1.	Docker Daemons:
+It is the process which receives request from the docker client and responsible for the managing docker objects. Such as :
+      Docker images,containers,network,volumes.
+
+2.	Docker Client:
+ 	Docker client communicate with the docker daemon through REST API calls. Docker client can be send request to the docker daemon.
+
+3.	Docker Objects
+a.	Docker Images:
+i.	It is collection of all the files, libraries, binaries, and other dependencies. Which is useful to execute the software application and run without glitches.
+b.	Docker Containers/services:
+* Containers are run time instances of docker images.
+* Fundamental of docker images to run docker containers.
+* It is a service, which runs on a visible host and they access single kernel.
+
+
+c.	Docker Network:
+i.	It use when docker works in a real time.
+ii.	Docker network helps to share the data across the various containers.
+iii.	Connection between container:
+1.	Bridge mode networking 
+2.	Container mode networking 
+3.	Host mode networking 
+4.	No networking 
+
+d.	Docker Volumes:
+i.	Docker volumes are mostly used in to store the data securely.
+ii.	The volume can be attached from the local machine path to the container path. So that in future in any case if the container goes down the data will be safe. But in that container user should store their data in the mounted path only.
+4.	Docker Registry:
+a.	Docker registry is the storage house for the docker images. It can be accessed publicly or privately across the world.
+b.	Docker images can be sent to registry by using “#docker push ” command.
+c.	Docker images can be download from the registry by using  “#docker pull ” command.
+d.	Docker registry can be hosted on :
+i.	Docker Hub
+ii.	AWS container registry
+iii.	Google container registry & More……
+5.	Dockerfile:
+a.	It is a simple text with instructions that how to build the images.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Docker Installation:
+-----------------------
+# yum check-update
+# curl -fsSL https://get.docker.com/ | sh
+# systemctl start docker
+# systemctl status docker
+	Output
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+   Active: active (running) since Sun 2016-05-01 06:53:52 CDT; 1 weeks 3 days ago
+     Docs: https://docs.docker.com
+ Main PID: 749 (docker)
+ 
+ # systemctl enable docker
+ # docker info 
+	Output
+
+    attach    Attach to a running container
+    build     Build an image from a Dockerfile
+    commit    Create a new image from a container's changes
+    cp        Copy files/folders between a container and the local filesystem
+    create    Create a new container
+    diff      Inspect changes on a container's filesystem
+    events    Get real time events from the server
+    exec      Run a command in a running container
+    export    Export a container's filesystem as a tar archive
+    history   Show the history of an image
+    images    List images
+    import    Import the contents from a tarball to create a filesystem image
+    info      Display system-wide information
+    inspect   Return low-level information on a container or image
+    kill      Kill a running container
+    load      Load an image from a tar archive or STDIN
+    login     Log in to a Docker registry
+    logout    Log out from a Docker registry
+    logs      Fetch the logs of a container
+    network   Manage Docker networks
+    pause     Pause all processes within a container
+    port      List port mappings or a specific mapping for the CONTAINER
+    ps        List containers
+    pull      Pull an image or a repository from a registry
+    push      Push an image or a repository to a registry
+    rename    Rename a container
+    restart   Restart a container
+    rm        Remove one or more containers
+    rmi       Remove one or more images
+    run       Run a command in a new container
+    save      Save one or more images to a tar archive
+    search    Search the Docker Hub for images
+    start     Start one or more stopped containers
+    stats     Display a live stream of container(s) resource usage statistics
+    stop      Stop a running container
+    tag       Tag an image into a repository
+    top       Display the running processes of a container
+    unpause   Unpause all processes within a container
+    update    Update configuration of one or more containers
+    version   Show the Docker version information
+    volume    Manage Docker volumes
+    wait      Block until a container stops, then print its exit code
+	
+Once the above status shows that means docker got installed in the machine.
+####################################################################################################################
+
+Docker Images
+--------------
+# docker search <img_name>
+	The above command helps to search the image_name in the docker hub.
+	<img_name> can you get from the https://hub.docker.com/
+
+# docker pull <img_name>
+	the above command is used to pull/download the image from docker hub to local machine.
+
+# docker images       or    # docker image ls
+	the above both command helps to list the images which are available in the host machine.
+
+# docker run -it <img_name>     or  # docker container run -it <img_name>
+	The above commands helps to run the image and create a container wiht container id.
+	Once the container create it takes you inside the container.
+	i = interactive
+	t = tty
+
+# docker run <img_name>
+	it create a container with exited state because we did not mention any -it which is interactive terminal.
+	So that once the action of creating container done it goes to exited state.
+	
+
+# docker container run -it -d <img_name>
+	The above command helps to run the image and create a container with container id and won't take you inside the container. But the container
+	is running in the background. Because of -d. It represents daemon.
+
+
+# docker ps
+	List the container, which is running.
+
+# docker ps -a
+	List all the container which are running state and exited state.
+	
+# docker container run -it -d --name <name the container> <img_name>
+	The above command run the image and create a container with the provided name.
+
+
+# docker exec -it <container_id> /bin/bash
+	It helps to take you inside the container.
+
+# docker attach <container_id>
+	It helps to take you inside the container.
+ctrl p q = it helps to come out from the container,but the container is running in the background.
+
+
+# docker stop <container_id>
+	above command stops the conatiner
+
+# docker rm <container_id>
+	Remove the container.
+	
+To remove all containers which is up and running
+  # docker rm -f $(docker ps -aq)
+
+# docker rmi <img_name>
+	remove the images.
+	
+Note: rm is used to remove the container
+	  rmi is used to remove the images.
+
+docker inspect <image_id> = this gives you ther more information about an image
+docker inspect <container_id> = this gives you ther more information about an container
+	  
+
+# docker container run -it -p 8080:80 <img_name>
+	-p represents port forwarding.
+	8080 indicates an application port number.
+Understand: - 
+	in the host machine we install docker and create a container. Inside the container suppose an application is running.
+	The application port number is 80. 
+	
+	How we can access this application from outside ?
+	
+	We need to do port mapping 8080 to some other port number. Which is in my example 80.
+	
+	Example: host machine ip is 192.168.33.10
+	if you take this ip and run in the chrome like : 192.168.33.10:8080, then the 8080 port hits to 80 port and run the application.
+
+To run a container with a random port which is generated by docker
+# docker cotnainer run -d -P nginx
+		-P = should be a caps and it generates a random port by docker.
+
+-----------------------------------------VOLUMES----------------------------------------------
+# docker volume create <vol_name>
+# docker volume ls
+# docker volume insepct <vol_name>
+# docker volume rm <vol_name>
+# docker volume prune 
+# 
+# docker container run -it -v <host_path>:<container_path> <img_name>
+	
+	The above command mount the host machine path to container path. So that in container what ever data you store that will 
+	sync to host machine path.
+
+# docker container run -it -v <vol_name>:<container_path> <img_name>
+		
+	
+
+# docker container export <container_id> > <file_name.tar>
+	The above command export to a container to a tar file.
+
+# docker image import <file_name.tar> <new_img_name>
+	The above command import an image from a tar file.
+
+# docker container commit <container_id> <new_image_name>
+
+# docker ls
+	The above command create a image from running container.
+
+# docker login
+	usernam:
+	password:
+
+Push to dockerhub
+------------------
+# docker image tag <img_name> shree123k/my_img_new
+		img_name = existing image name
+		shree123k=docker hub username
+		my_img_new=new tag image name
+
+# docker push kolachina/<tag_img_name>
+
+=========================================
+To check the stats of a container 
+ # docker stat
+
+copy files from container to local machine
+# docker cp <containerid>:/usr/lib/tomcat/shree.txt .
+
+copy a file from local machine to container machine
+#docker cp shre.txt <containerid>:/usr/lib/tomcat
+
+
+save docker images to a tar file
+	# docker save -o shree.tar <img_name>
+after that copy the tar file to other server and load over there.
+	
+load docker images from the tar file
+	# docker load < shree.tar
+########################################################################################################################################
+Dockerfile
+-----------
+An ARG declared before a FROM is outside of a build stage, so it can’t be used in any instruction after a FROM. To use the default value of an ARG declared before the first FROM use an ARG instruction without a value inside of a build stage:
+ARG  CODE_VERSION=latest
+FROM img_name
+CMD  echo“ hello world. ”
+----------------------------------------------------------------------------------------					
+						
+						DOCKERFILE
+# vi Dockerfile
+
+FROM ubuntu:14.0
+LABEL name=”shree”
+LABEL email=shree123k@gmail.com
+:wq!
+To build a image based on the Dockerfile:
+	#docker image build -t <img_name> .
+Now check where this labels can see.
+	# docker images ls
+	Note: (consider the new image_id)
+	# docker image inspect <img_id>
+	In the label section we can see the name and email address.
+
+
+2.	ENV:
+    # vi Dockerfile
+FROM ubuntu:14.0
+LABEL name=”shree”
+LABEL email=shree123k@gmail.com
+ENV NAME shree
+ENV PASS shree
+:wq!
+# docker image build -t img1:1 .
+# docker image ls
+# docker container run -it img1:1 
+	To check environment variable type the “env” command.
+Inside the container:
+#env
+	Here can see the environment variable details like name and password which is (shree, shree)
+
+3.	RUN:
+# vi Dockerfile
+FROM ubuntu:14.0
+LABEL name=”shree”
+LABEL email=shree123k@gmail.com
+ENV NAME shree
+ENV PASS shree
+RUN ls > /tmp/1.txt
+RUN cd /tmp
+RUN pwd > /tmp/2.txt
+
+WORKDIR /home
+RUN pwd > /tmp/3.txt
+RUN apt-get install git -y && apt-get update && apt-get install python -y
+
+EXPOSE 22 80 
+
+RUN whoami > /tmp/4.txt
+USER $NAME
+RUN whoami > /tmp/5.txt
+RUN mkdir -p /tmp/test_dir
+RUN yum install tree -y
+COPY test_files /tmp/test_dir
+COPY test.tar.gz /tmp/test_dir
+ADD test.tar.gz /tmp/test_dir
+CMD echo “hello world”
+CMD [“python”]
+CMD [“sh”]
+EXPOSE 22 80 8080
+ENTRYPOINT ["tree"]
+:wq!
+
+#docker image build -t <img_name> .
+	Here the . (dot) means Dockerfile.
+	
+How to create your own docker image by using Dockerfile
+------------------------------------
+Instructions:
+---
+1. os - ubuntu
+2. update apt repository
+3. install dependencies using apt
+4. install python dependencies using pip
+5. copy source code to /opt folders
+6. run the web server using flask command
+
+
+#################################################################################################################
+										NETWORKING
+Docker Network   (bridge, host, none)
+-----------------
+Network				Driver
+--------                        -------
+bridge				bridge
+host				host
+none				null
+shree_new			bridge
+
+
+Bridge
+-------
+- Any container created, by default the bridge network attach to it. And usually get ip of .X.X series. To expose container applicaton to out need to do port mapping.
+	# docker container run <img_name>
+Host
+--------
+- If any container attach to host network, it can directly talk to the host machine. Here no need to do port maping. Directly access from the host by using the direct port.
+ # docker container run --network=host <img_name>
+ 
+
+None
+--------
+The container which is not connected to any network.
+	# docker container run --network=none <img_name>
+
+# docker network ls
+	It shows the list of networks
+
+# docker network inspect bridge
+	It shows the info about the bridge network and also shows how many container attached to this network.
+
+
+# docker network create -d bridge ntw1
+      -d = network drivers
+       bridge = network driver type 
+       ntw1 = new network name
+	   
+
+# docker network create --driver bridge --subnet 10.10.0.0/16 shree_ntw 
+		It creates a shree network
+
+
+
+# docker container run -it --network none <img_id>
+	Here a container will create with none network. That means no internet will be availble.
+If want to add a network, then need to disconnect it
+# docker network disconnect none <container_id>
+
+connect a network to a container
+# docker network connect bridge <container_id>
+
+##########################################################################################################
+					
+									VolumeS
+									--------
+volumes means to store the data in some location.
+types of mount
+--------------
+1. volume
+	#docker container run -d --name vistualpath-vol -v vistualpath:/usr/share/nginx/html nginx:1.19.0
+	Note: if the same volume use for multi container, the same data can be shared to both container.
+	
+	
+
+	#docker container run -d --name vistualpath-vol-1 --mount type=mount,src=vistualpath, dst=/usr/share/nginx/html,ro nginx:1.19.0
+
+2. bind:
+   can mount any directory in the docker host root filesystem.
+    # docker container run -d --name bind-volume -v /backup:/usr/share/nginx/html nginx:1.19.0
+	 Note: here the blank /backup folder is empty one and in docker container /usr/share/nginx/ content will wiped out. 
+
+3. tempfs:
+	Which is temporarly attach to the container. once the system restered the volume will be lapsed
+	# docker container run -d -it --tempfs /app nginx:latest
+
+Note: Location of docker volumes: /var/lib/docker/volumes
+		
+# docker run --mount source=html_dir,destination=/usr/share/nginx/html,readonly <img_id>
+# docker volume rm <volume_name>
+	Note: if the volume is used to the container, then need to delete it first, then can delete the volume.
+
+# mkdir /shree_data
+
+Backup
+------------
+
+
+
+##################################################################################################################
+
+Docker Registry
+---------------
+- It's a central repository for docker images.
+- To create your own image and push to your private docker hub account, first you need to tag that image then you can push it by below command.
+- To push docker image to the docker hub, we have to login in the docker hub account. By using the below command
+	# docker login
+	# docker image tag httpd shree123k/httpd-new
+	# docker images
+	# docker push shree123k/httpd-new
+############################IMAGE & CONTAINER IMPORT/EXPORT ###############################################################################################
+
+# docker container export <container_id> > file1.tar
+# docker container export <container_id> -o file1.tar (here -o should be small)
+	The above command is used to convert a container into a tar file.
+
+# docker image import file1.tar <new_img_name>
+	The above command is used to import an image from a tar file.
+
+# docker container run -it <img_name> /bash
+
+#docker image save ubuntu:18.04 nginx:latest nginx:1.19 -o image-backup.tar.gz
+	the above command is use to save multiple image in a single tar file.
+
+# docker image load -i image-backup.tar.gz
+		it will download images to your docker host.
+		if pass #docker image ls can show you the download image.
+		
+
+* Convert container into an image
+	# docker container commit -a "shree.kolachina" -m "custom image for nginx" <container_name> <img_name>
+               container_name= pass the container id/name
+			   img_name = pass the image name because it creates a img from a container.
+			   
+			   
+----------------------------docker-compose.yml----------------------------
+# sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+# sudo chmod +x /usr/local/bin/docker-compose
+# sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+# $ docker-compose --version
+docker-compose version 1.26.2, build 1110ad01
+
+# vi mycompose.yml
+
+version: '3.7'
+networks:
+  mynet:
+volumes:
+  nginxlogs:
+  tomcatlogs:
+services:
+  web:    ## name of the service / can be any value of your choice
+    image: nginx
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - "/nginxlogs:/var/log/nginx"
+    networks:
+      - mynet
+  app:    ## name of the service / can be any value of your choice
+    image: tomcat
+    ports:
+      - "8080"
+      - "8443"
+    volumes:
+      - "/tomcatlogs:/usr/local/tomcat/logs"
+    networks:
+      - mynet
+
+  222  docker rm -f d59e0960215a 048130535fe5
+  223  docker ps -a
+  224  docker network ls
+  225  docker network inspect bridge
+  226  ifconfig
+  227  clear
+  228  docker run -d --name cont1 lerndevops/alpine:sleep
+  229  docker ps
+  230  docker run -d --name cont2 lerndevops/alpine:sleep
+  231  docker ps
+  232  docker inspect 407c2320349b
+  233  docker inspect cont1
+  234  docker inspect cont2
+  235  clear
+  236  docker ps
+  237  docker exec cont1 hostname -i
+  238  docker exec cont2 hostname -i
+  239  docker exec cont2 ping 172.17.0.2
+  240  docker exec cont1 ping 172.17.0.3
+  241  docker exec cont2 ifconfig
+  242  docker network inspect bridge
+  243  clear
+  244  docker network ls
+  245  docker network create --help
+  246  docker network create mybridge --driver bridge --subnet 10.0.0.0/16 --gateway 10.0.0.1
+  247  docker network ls
+  248  docker network inspect mybridge
+  249  clear
+  250  docker run -d --name cont3 --network mybridge lerndevops/alpine:sleep
+  251  docker run -d --name cont4 --network mybridge lerndevops/alpine:sleep
+  252  docker ps
+  253  docker exec cont4 hostname -i
+  254  docker exec cont3 hostname -i
+  255  docker exec cont2 hostname -i
+  256  docker exec cont1 hostname -i
+  257  docker exec cont3 ping 10.0.0.3
+  258  docker exec cont4 ping 10.0.0.2
+  259  docker exec cont4 ping 172.17.0.2
+  260  docker inspect cont4
+  261  history
+  262  clear
+  263  docker network ls
+  264  docker run -d --name cont5 --network none lerndevops/alpine:sleep
+  265  docker inspect cont5
+  266  docker exec cont5 ifconfig
+  267  clearclear
+  268  clear
+  269  docker network ls
+  270  hostname -i
+  271  docker run -d --name cont6 --network host lerndevops/alpine:sleep
+  272  docker inspect cont6
+  273  docker exec cont6 hostname -i
+  274  hostname -i
+  275  clear
+  276  docker run -d --network host nginx
+  277  docker ps
+  278  docker run -d --network host nginx
+  279  docker ps -a
+  280  docker logs 0459b4e3fd7c
+  281  clear
+  282  docker network ls
+  283  clear
+  284  docker-compose -v
+  285  sudo curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-uname -s-uname -m -o /usr/local/bin/docker-compose
+  286  sudo chmod +x /usr/local/bin/docker-compose
+  287  docker-compose -v
+  288  vi docker-compose.yml
+  289  clear
+  290  docker-compose up -d
+  291  docker ps
+  292  docker rm -f docker ps -qa
+  293  docker ps
+  294  docker-compose up -d
+  295  docker ps
+  296  cat docker-compose.yml
+  297  docker-compose up --scale web=3 --scale app=2 -d
+  298  docker ps
+  299  docker-compose up --scale web=2 --scale app=1 -d
+  300  docker ps
+  301  docker-compose down
+  302  history
+  303  docker-compose --help
+  304  clear
+  305  docker ps
+  306  cat docker-compose.yml
+  307  mv docker-compose.yml mycompose.yml
+  308  ls -l
+  309  docker-compose up --scale web=2 --scale app=1 -d
+  310  docker-compose --file mycompose.yml up --scale web=2 --scale app=1 -d
+  311  vi mycompose.yml
+  312  docker-compose --file mycompose.yml down
+  313  docker-compose --file mycompose.yml up --scale web=2 --scale app=1 -d
+  314  cd /nginxlogs/
+  315  ls -l
+  316  cd
+  317  clear
+  318  docker ps
+
+
+To run docker-compose file = # docker-compose up -d  OR   # docker-compose -f <docker-compose.yml_filename>up -d
+To delete docker container which has created by docker-compose= # docker-compose down	   
+
+=======================================================
+Docker Volumes
+-----------------
+docker voluem ls
+ list all the volumes
+
+docker volume created myvol
+  create a volumes
+
+docker volume inspect myvol
+  to get more details of myvol.
+ 
+
+docker run -d -P --volume myvol:/usr/local/tomcat/logs <img_name>
+	this volumes created under /var/lib/docker/volumes/myvol/_data, which is docker volume
+
+docker run -d -P --volume /shree:/usr/local/tomcat/logs <img_name>
+	this volumes is a customized and mount the container path with /shree which exist in shree dir.
+
+
+
+
+
+
+
+
+
+
+
+
+
+\
